@@ -54,7 +54,15 @@ function Tables() {
                 <MDTypography variant="h6" color="white">
                   Withdrawals Table
                 </MDTypography>
-                <MDButton onClick={exportData}>Export</MDButton>
+                {["Pending Approval", "Approved", "Rejected", "Sent to Bank", "Completed"].map(
+                  (item, index) => {
+                    return (
+                      <MDButton key={index} onClick={() => exportData(index + 1)}>
+                        Export {item} Data
+                      </MDButton>
+                    );
+                  }
+                )}
               </MDBox>
               <MDBox pt={3}>
                 <DataTable

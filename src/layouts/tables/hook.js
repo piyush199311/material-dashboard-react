@@ -2,6 +2,7 @@ import { EXPORT_WITHDRAWAL } from "api/api";
 import { LIST_WITHDRAWAL } from "api/api";
 import MDButton from "components/MDButton";
 import { useEffect, useState } from "react";
+import { Link } from "@mui/material";
 
 export const columns = [
   {
@@ -26,26 +27,33 @@ export const columns = [
   },
   {
     Header: "Get Withdrawal",
-    accessor: () => <MDButton>Get</MDButton>,
+    accessor: ({ requestId }) => (
+      <Link to={`/withdrawals/get/${requestId}}`}>
+        <MDButton>Get</MDButton>
+      </Link>
+    ),
     align: "Left",
   },
   {
     Header: "Update Withdrawal",
-    accessor: () => <MDButton>Update</MDButton>,
+    accessor: ({ requestId }) => (
+      <Link to={`/withdrawals/update/${requestId}}`}>
+        <MDButton>Update</MDButton>
+      </Link>
+    ),
     align: "Left",
   },
 ];
 export const useTableData = () => {
   const [rows, setRows] = useState([]);
-  const exportData = async () => {
+  const exportData = async (type) => {
     try {
-      const response = await fetch(`${EXPORT_WITHDRAWAL}?type=1`, {
+      const response = await fetch(`${EXPORT_WITHDRAWAL}?type=${type}`, {
         method: "GET",
         headers: {
           "x-access-token": window.localStorage.getItem("token"),
         },
       });
-      console.log(...response.headers);
       if (response.headers.get("content-type") === "text/csv; charset=utf-8") {
         const blob = await response.blob();
         const file = window.URL.createObjectURL(blob);
