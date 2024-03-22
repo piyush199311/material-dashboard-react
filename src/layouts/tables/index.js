@@ -29,9 +29,10 @@ import DataTable from "examples/Tables/DataTable";
 
 // Data
 import { useTableData, columns } from "./hook";
+import MDButton from "components/MDButton";
 
 function Tables() {
-  const { rows } = useTableData();
+  const { rows, exportData } = useTableData();
 
   return (
     <DashboardLayout>
@@ -53,6 +54,7 @@ function Tables() {
                 <MDTypography variant="h6" color="white">
                   Withdrawals Table
                 </MDTypography>
+                <MDButton onClick={exportData}>Export</MDButton>
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
