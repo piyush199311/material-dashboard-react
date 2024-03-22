@@ -1,5 +1,5 @@
 import { EXPORT_WITHDRAWAL } from "api/api";
-import { LIST_WITHDRAWAL } from "api/api";
+import { LIST_WITHDRAWAL, GET_WITHDRAWAL } from "api/api";
 import MDButton from "components/MDButton";
 import { useEffect, useState } from "react";
 import { Link } from "@mui/material";
@@ -26,22 +26,22 @@ export const columns = [
     align: "left",
   },
   {
-    Header: "Get Withdrawal",
+    Header: "View Withdrawal",
     accessor: ({ requestId }) => (
-      <Link to={`/withdrawals/get/${requestId}}`}>
-        <MDButton>Get</MDButton>
+      <Link href={`/withdrawals/view/${requestId}`}>
+        <MDButton>View</MDButton>
       </Link>
     ),
-    align: "Left",
+    align: "left",
   },
   {
     Header: "Update Withdrawal",
     accessor: ({ requestId }) => (
-      <Link to={`/withdrawals/update/${requestId}}`}>
+      <Link href={`/withdrawals/update/${requestId}`}>
         <MDButton>Update</MDButton>
       </Link>
     ),
-    align: "Left",
+    align: "left",
   },
 ];
 export const useTableData = () => {
@@ -88,5 +88,33 @@ export const useTableData = () => {
   return {
     rows,
     exportData,
+  };
+};
+
+export const useWithdrawal = (requestId) => {
+  const [initialValues, setInitialValues] = useState({});
+  const [loading, setLoading] = useState(false);
+  const getData = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${GET_WITHDRAWAL}${requestId}`, {
+        method: "GET",
+        headers: {
+          "x-access-token": window.localStorage.getItem("token"),
+        },
+      });
+      const data = await response.json();
+      setInitialValues(data);
+    } catch (e) {
+      console.log(e);
+    }
+    setLoading(false);
+  };
+  useEffect(() => {
+    getData();
+  }, []);
+  return {
+    initialValues,
+    loading,
   };
 };

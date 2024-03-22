@@ -32,6 +32,7 @@ import theme from "assets/theme";
 import routes from "routes";
 import SignIn from "layouts/authentication/sign-in";
 import Table from "layouts/tables";
+import ViewWithdrawal from "layouts/ViewWithdrawal";
 
 // Material Dashboard 2 React contexts
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
@@ -108,6 +109,8 @@ export default function App() {
           />
           <Routes>
             <Route path="/" element={<Table />} />
+            <Route path="/withdrawals/view/:requestId" element={<ViewWithdrawal />} />
+            <Route path="/withdrawals/update/:requestId" />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </>
