@@ -14,7 +14,7 @@ Coded by www.creative-tim.com
 */
 
 import { useState } from "react";
-
+import PropTypes from "prop-types";
 // react-router-dom components
 import { Link } from "react-router-dom";
 
@@ -40,11 +40,50 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 
 // Images
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { LOGIN } from "api/api";
 
-function Basic() {
-  const [rememberMe, setRememberMe] = useState(false);
+function Basic({ setUser }) {
+  const [loading, setLoading] = useState(false);
 
-  const handleSetRememberMe = () => setRememberMe(!rememberMe);
+  const { values, touched, errors, handleChange, handleBlur, handleSubmit, isValid } = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: Yup.object().shape({
+      email: Yup.string().email().required(),
+      password: Yup.string().required(),
+    }),
+    onSubmit: async (values) => {
+      const { email, password } = values;
+      setLoading(true);
+      try {
+        const response = await fetch(LOGIN, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        });
+        const { status, message, access_token, adminid, data } = await response.json();
+        alert(message);
+        if (status === "OK") {
+          window.localStorage.setItem("token", access_token);
+          window.localStorage.setItem("adminid", adminid);
+          window.localStorage.setItem("data", JSON.stringify(data));
+          setUser({ token: access_token, adminId: adminid, data });
+        }
+      } catch (e) {
+        console.log(e);
+      }
+      setLoading(false);
+    },
+  });
 
   return (
     <BasicLayout image={bgImage}>
@@ -63,46 +102,37 @@ function Basic() {
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
             Sign in
           </MDTypography>
-          <Grid container spacing={3} justifyContent="center" sx={{ mt: 1, mb: 2 }}>
-            <Grid item xs={2}>
-              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
-                <FacebookIcon color="inherit" />
-              </MDTypography>
-            </Grid>
-            <Grid item xs={2}>
-              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
-                <GitHubIcon color="inherit" />
-              </MDTypography>
-            </Grid>
-            <Grid item xs={2}>
-              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
-                <GoogleIcon color="inherit" />
-              </MDTypography>
-            </Grid>
-          </Grid>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
-          <MDBox component="form" role="form">
+          <MDBox component="form" role="form" onSubmit={handleSubmit}>
             <MDBox mb={2}>
-              <MDInput type="email" label="Email" fullWidth />
+              <MDInput
+                name="email"
+                type="email"
+                label="Email"
+                fullWidth
+                error={touched.email && errors.email}
+                value={values.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                disabled={loading}
+              />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="password" label="Password" fullWidth />
-            </MDBox>
-            <MDBox display="flex" alignItems="center" ml={-1}>
-              <Switch checked={rememberMe} onChange={handleSetRememberMe} />
-              <MDTypography
-                variant="button"
-                fontWeight="regular"
-                color="text"
-                onClick={handleSetRememberMe}
-                sx={{ cursor: "pointer", userSelect: "none", ml: -1 }}
-              >
-                &nbsp;&nbsp;Remember me
-              </MDTypography>
+              <MDInput
+                name="password"
+                type="password"
+                label="Password"
+                fullWidth
+                error={touched.password && errors.password}
+                value={values.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                disabled={loading}
+              />
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth>
+              <MDButton type="submit" variant="gradient" color="info" fullWidth disabled={!isValid}>
                 sign in
               </MDButton>
             </MDBox>
@@ -127,5 +157,7 @@ function Basic() {
     </BasicLayout>
   );
 }
-
+Basic.propTypes = {
+  setUser: PropTypes.func.isRequired,
+};
 export default Basic;

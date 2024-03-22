@@ -45,6 +45,8 @@ import createCache from "@emotion/cache";
 
 // Material Dashboard 2 React routes
 import routes from "routes";
+import SignIn from "layouts/authentication/sign-in";
+import Dashboard from "layouts/dashboard";
 
 // Material Dashboard 2 React contexts
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
@@ -68,6 +70,19 @@ export default function App() {
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
+  const [user, setUser] = useState(() => {
+    const token = window.localStorage.getItem("token");
+    const adminId = window.localStorage.getItem("adminid");
+    if (token && adminId) {
+      const data = JSON.stringify(window.localStorage.getItem("data"));
+      return {
+        token,
+        adminId,
+        data,
+      };
+    }
+    return null;
+  });
 
   // Cache for the rtl
   useMemo(() => {
@@ -144,6 +159,34 @@ export default function App() {
         settings
       </Icon>
     </MDBox>
+  );
+
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      {!user && (
+        <Routes>
+          <Route path="/" element={<SignIn setUser={setUser} />} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      )}
+      {user && (
+        <>
+          <Sidenav
+            color={sidenavColor}
+            brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
+            brandName="Avanti"
+            routes={routes}
+            onMouseEnter={handleOnMouseEnter}
+            onMouseLeave={handleOnMouseLeave}
+          />
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </>
+      )}
+    </ThemeProvider>
   );
 
   return direction === "rtl" ? (
