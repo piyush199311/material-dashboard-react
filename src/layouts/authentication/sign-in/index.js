@@ -132,7 +132,13 @@ function Basic({ setUser }) {
               />
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton type="submit" variant="gradient" color="info" fullWidth disabled={!isValid}>
+              <MDButton
+                type="submit"
+                variant="gradient"
+                color="info"
+                fullWidth
+                disabled={!isValid || loading}
+              >
                 sign in
               </MDButton>
             </MDBox>

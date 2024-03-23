@@ -110,7 +110,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Table />} />
             <Route path="/withdrawals/view/:requestId" element={<ViewWithdrawal />} />
-            <Route path="/withdrawals/update/:requestId" />
+            <Route path="/withdrawals/update/:requestId" element={<ViewWithdrawal update />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </>

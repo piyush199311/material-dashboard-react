@@ -3,7 +3,9 @@ import { LIST_WITHDRAWAL, GET_WITHDRAWAL } from "api/api";
 import MDButton from "components/MDButton";
 import { useEffect, useState } from "react";
 import { Link } from "@mui/material";
-
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { UPDATE_WITHDRAWAL } from "api/api";
 export const columns = [
   {
     Header: "Amount",
@@ -74,9 +76,11 @@ export const useTableData = () => {
           "x-access-token": window.localStorage.getItem("token"),
         },
       });
-      const { status, data } = await response.json();
+      const { status, data, message } = await response.json();
       if (status === "OK") {
         setRows(data);
+      } else {
+        alert(message);
       }
     } catch (e) {
       console.log(e);
@@ -110,11 +114,56 @@ export const useWithdrawal = (requestId) => {
     }
     setLoading(false);
   };
+  const { values, touched, errors, isValid, handleBlur, handleChange, handleSubmit } = useFormik({
+    initialValues: {
+      txnId: "",
+      type: "",
+      remarks: "",
+    },
+    validationSchema: Yup.object().shape({
+      txnId: Yup.string().required(),
+      type: Yup.string().required(),
+      remarks: Yup.string().required(),
+    }),
+    onSubmit: async (values) => {
+      const { txnId, type, remarks } = values;
+      setLoading(true);
+      try {
+        const response = await fetch(`${UPDATE_WITHDRAWAL}${requestId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": window.localStorage.getItem("token"),
+          },
+          body: JSON.stringify({
+            txnId,
+            type,
+            remarks,
+          }),
+        });
+        const { status, message } = await response.json();
+        alert(message);
+        if (status === "OK") {
+          getData();
+        }
+      } catch (e) {
+        console.log(e);
+      }
+      setLoading(false);
+    },
+  });
   useEffect(() => {
     getData();
   }, []);
   return {
     initialValues,
     loading,
+    values,
+    touched,
+    errors,
+    isValid,
+    handleBlur,
+    handleChange,
+    handleSubmit,
   };
 };
