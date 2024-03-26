@@ -1,6 +1,3 @@
-// @mui material components
-import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
 import PropTypes from "prop-types";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -9,14 +6,12 @@ import MDTypography from "components/MDTypography";
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import Footer from "examples/Footer";
-import { Select, MenuItem } from "@mui/material";
+import { Select, MenuItem, Grid, Card } from "@mui/material";
 import MDButton from "components/MDButton";
-import { useParams } from "react-router-dom";
 import { useWithdrawal } from "./tables/hook";
 import MDInput from "components/MDInput";
 const stages = ["Pending Approval", "Approved", "Rejected", "Sent to Bank", "Completed"];
 function Tables({ update }) {
-  const { requestId } = useParams();
   const {
     initialValues,
     loading,
@@ -27,7 +22,7 @@ function Tables({ update }) {
     handleSubmit,
     handleBlur,
     handleChange,
-  } = useWithdrawal(requestId);
+  } = useWithdrawal();
   const { paymentData, requester } = initialValues;
   const { amount, currentStatus, statuses } = paymentData || {};
   const { firstName, lastName } = requester || {};

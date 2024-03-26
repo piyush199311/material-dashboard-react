@@ -1,11 +1,11 @@
 import { EXPORT_WITHDRAWAL } from "api/api";
-import { LIST_WITHDRAWAL, GET_WITHDRAWAL } from "api/api";
+import { LIST_WITHDRAWAL, GET_WITHDRAWAL, UPDATE_WITHDRAWAL } from "api/api";
 import MDButton from "components/MDButton";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { Link } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { UPDATE_WITHDRAWAL } from "api/api";
 export const columns = [
   {
     Header: "Amount",
@@ -97,7 +97,8 @@ export const useTableData = () => {
   };
 };
 
-export const useWithdrawal = (requestId) => {
+export const useWithdrawal = () => {
+  const { requestId } = useParams();
   const [initialValues, setInitialValues] = useState({});
   const [loading, setLoading] = useState(false);
   const getData = async () => {
