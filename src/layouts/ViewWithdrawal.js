@@ -8,8 +8,8 @@ import MDTypography from "components/MDTypography";
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
+import { Select, MenuItem } from "@mui/material";
 import MDButton from "components/MDButton";
 import { useParams } from "react-router-dom";
 import { useWithdrawal } from "./tables/hook";
@@ -52,7 +52,7 @@ function Tables({ update }) {
                         onBlur={handleBlur}
                         disabled={loading}
                       />
-                      <MDInput
+                      <Select
                         placeholder="Type"
                         name="type"
                         fullWidth
@@ -61,7 +61,15 @@ function Tables({ update }) {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         disabled={loading}
-                      />
+                      >
+                        {stages.map((item, index) => {
+                          return (
+                            <MenuItem key={index} value={index + 1}>
+                              {item}
+                            </MenuItem>
+                          );
+                        })}
+                      </Select>
                       <MDInput
                         placeholder="Remarks"
                         name="remarks"
