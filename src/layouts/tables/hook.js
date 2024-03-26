@@ -54,6 +54,7 @@ export const useTableData = () => {
         method: "GET",
         headers: {
           "x-access-token": window.localStorage.getItem("token"),
+          "ngrok-skip-browser-warning": "any",
         },
       });
       if (response.headers.get("content-type") === "text/csv; charset=utf-8") {
@@ -74,6 +75,7 @@ export const useTableData = () => {
         method: "GET",
         headers: {
           "x-access-token": window.localStorage.getItem("token"),
+          "ngrok-skip-browser-warning": "any",
         },
       });
       const { status, data, message } = await response.json();
@@ -105,6 +107,7 @@ export const useWithdrawal = (requestId) => {
         method: "GET",
         headers: {
           "x-access-token": window.localStorage.getItem("token"),
+          "ngrok-skip-browser-warning": "any",
         },
       });
       const data = await response.json();
@@ -134,6 +137,7 @@ export const useWithdrawal = (requestId) => {
           headers: {
             "Content-Type": "application/json",
             "x-access-token": window.localStorage.getItem("token"),
+            "ngrok-skip-browser-warning": "any",
           },
           body: JSON.stringify({
             txnId,
